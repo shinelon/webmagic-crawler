@@ -38,7 +38,7 @@ public class ZhinanTargetHtmlTest {
 	
 	private static final Logger logger = LoggerFactory.getLogger(ZhinanTargetHtmlTest.class);
 	
-	private String remove_prefix="//www.zrfan.com/wp-content/themes/begin/inc/go.php?url=";
+	private String removePrefix="//www.zrfan.com/wp-content/themes/begin/inc/go.php?url=";
 	
 	private List<String> nodeNames=Arrays.asList("fieldset","h2","blockquote");
 	
@@ -139,7 +139,7 @@ public class ZhinanTargetHtmlTest {
 				Elements hasA = p.select("a");
 			    if(hasA.size()>0) {
 			    	logger.info("title1:{}",p.text());
-			    	logger.info("url1:{}",StringUtils.remove(p.select("a").attr("href"), remove_prefix));
+			    	logger.info("url1:{}",StringUtils.remove(p.select("a").attr("href"), removePrefix));
 			    }else {
 			    	logger.info("title2:{}",p.text());
 			    }

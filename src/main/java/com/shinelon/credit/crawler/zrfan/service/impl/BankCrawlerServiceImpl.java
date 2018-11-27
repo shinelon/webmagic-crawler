@@ -57,9 +57,6 @@ public class BankCrawlerServiceImpl implements BankCrawlerService {
 	@Autowired
 	@Qualifier("spiderHttpClientDownloader")
 	private HttpClientDownloader httpClientDownloader;
-//	@Autowired
-//	@Qualifier("spiderSeleniumDownloader")
-//	private SeleniumDownloader seleniumDownloader;
 
 	@Override
 	public void execute(List<String> urls) {

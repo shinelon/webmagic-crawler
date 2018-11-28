@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>download</title>
+<link rel="stylesheet" href="../../static/layui-v2.4.5/css/layui.css">
+</head>
+<body>
+	<!-- 你的HTML代码 -->
+	<div class="layui-container">
+		<div class="layui-row">
+			<div class="layui-inline">
+				<div class="layui-form-mid layui-word-aux"></div>
+			</div>
+		</div>
+		<div class="layui-row">
+			<blockquote class="layui-elem-quote news_search">
+				<div class="layui-form-item">
+					<div class="layui-input-inline" style="width: 20%">
+						<label class="layui-form-label">文件类型</label>
+						<div class="layui-input-block">
+							<select id="type" class="layui-select search_input name"
+								style="width: 190px" lay-verify="required">
+								<option value="">全部</option>
+								<option value="bank">银行</option>
+								<option value="guide">指南</option>
+							</select>
+						</div>
+					</div>
+					<div class="layui-inline">
+						<a class="layui-btn search_btn">查询</a>
+						<!-- 		                <a class="layui-btn addIcons_btn" style="background-color:#5FB878;margin-left: 50px">新增合作方</a> -->
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<div class="layui-input-inline" style="width: 20%">
+						<label class="layui-form-label">抓取几页</label>
+						<div class="layui-input-block">
+							<input type="text" class="layui-input bankPageSum" value='3'
+								id="bankPageSum">
+						</div>
+					</div>
+					<div class="layui-inline">
+						<a class="layui-btn crawl_bank">抓取银行</a>
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<div class="layui-input-inline" style="width: 20%">
+						<label class="layui-form-label">抓取时间</label>
+						<div class="layui-input-block">
+							<input type="text" class="layui-input dateStr" id="dateStr">
+						</div>
+					</div>
+					<div class="layui-inline">
+						<a class="layui-btn crawl_guide">抓取指南</a>
+					</div>
+				</div>
+
+				<div class="layui-inline">
+					<div class="layui-form-mid layui-word-aux"></div>
+				</div>
+			</blockquote>
+		</div>
+
+		<div class="layui-row">
+			<table id="fileListTable" lay-filter="tableListId"></table>
+		</div>
+
+	</div>
+	<script src="../../static/layui-v2.4.5/layui.js"></script>
+	<script>
+		//一般直接写在一个js文件中
+		layui.use([ 'layer', 'form', 'jquery', 'table' ], function() {
+			var layer = layui.layer, form = layui.form;
+			var table = layui.table;
+			var $ = layui.jquery;
+			//渲染表格
+			function tableList(data) {
+				table.render({
+					elem : '#fileListTable',
+					height : 312,
+					id : 'tableListId',
+// 					url : '../../file/list' //数据接口
+					//	 			    ,page: true //开启分页
+// 					,
+					cols : [ [ //表头
+					{
+						field : 'dateStr',
+						title : '日期',
+						width : 200,
+						sort : true,
+						fixed : 'left'
+					}, {
+						field : 'fileName',
+						title : '文件名',
+						width : 300
+					}, {
+						field : 'fileFullPath',
+						title : '文件路径',
+						width : 300
+					}, {
+						fixed : 'right',
+						title : '操作',
+						width : 120,
+						align : 'center',
+						toolbar : '#toolTpl'
+					} ] ],
+					data : data.data
+				});
+			}
+
+			//查询数据
+			function searchList() {
+				var params = {};
+				params['type'] = $("#type").val();
+				var index = layer.msg('查询中，请稍候', {
+					icon : 16,
+					time : false,
+					shade : 0.8
+				});
+				$.ajax({
+					url : '../../file/list',
+					type : "post",
+					data : params,
+					dataType : "json",
+					success : function(data) {
+						//执行加载数据的方法
+						tableList(data);
+					}
+				})
+				layer.close(index);
+			}
+			//查询按钮
+			$(".search_btn").click(function() {
+				searchList();
+			});
+			//抓取银行
+			$(".crawl_bank").click(function() {
+				var params = {};
+				var pageSum = $("#bankPageSum").val();
+				if (!checkIsNumber(pageSum)) {
+					layer.msg('输入页码非法!');
+					return;
+				}
+				params['pageSum'] = pageSum
+				var index = layer.msg('银行列表抓取中...抓取时间大约3-4分钟，请稍候', {
+					icon : 16,
+					time : 0,
+					shade : 0.8
+				});
+				$.ajax({
+					url : '../../crawl/bank',
+					type : "POST",
+					data : params,
+					dataType : "json",
+					success : function(data) {
+						layer.close(index);
+						if (data.code == '0' || data.code == '0000') {
+							searchList();
+						} else {
+							layer.msg(data.msg)
+						}
+					}
+				});
+
+			});
+			//抓取指南
+			$(".crawl_guide").click(function() {
+				var params = {};
+				var dateStr = $("#dateStr").val();
+				if (dateStr == null | dateStr == "") {
+					layer.msg('抓取时间不能为空!');
+					return;
+				}
+				params['dateStr'] = dateStr
+				var index = layer.msg('指南抓取中...抓取时间大约1-2分钟，请稍候', {
+					icon : 16,
+					time : 0,
+					shade : 0.8
+				});
+				$.ajax({
+					url : '../../crawl/guide',
+					type : "POST",
+					data : params,
+					dataType : "json",
+					success : function(data) {
+						layer.close(index);
+						if (data.code == '0' || data.code == '0000') {
+							searchList();
+						} else {
+							layer.msg(data.msg)
+						}
+					}
+				});
+
+			});
+
+			/**监听工具条*/
+			table.on('tool(tableListId)', function(obj) {
+				var data = obj.data; //获得当前行数据
+				console.log(data);
+				var layEvent = obj.event; //获得 lay-event 对应的值
+
+				if (layEvent === 'download') {
+// 					$.ajax({
+// 						url : '../../file/download',
+// 						type : "POST",
+// 						data : data,
+// 						dataType : "json",
+// 						success : function(data) {
+// 						}
+// 					});
+					var downloadUrl='../../file/download?fileFullPath='+encodeURI(data.fileFullPath)+'&fileName='+data.fileName
+					console.info(downloadUrl)
+				    window.open(downloadUrl)
+
+				} else if (layEvent === 'del') {
+
+					layer.confirm('确定删除？', {
+						icon : 3,
+						title : '提示信息'
+					}, function(index) {
+						$.ajax({
+							url : '../../file/del',
+							type : "POST",
+							data : data,
+							dataType : "json",
+							success : function(data) {
+								if (data.code == '0' || data.code == '0000') {
+									searchList();
+								}
+							}
+						});
+						layer.close(index);
+					});
+				}
+			});
+
+			//初始化页面
+			$("#dateStr").val(getNowFormatDate());
+
+// 			searchList();
+		});
+
+		function checkIsNumber(param) {
+			var r = /^[0-9]*$/;
+			return r.test(param)
+		}
+
+		function getNowFormatDate() {
+			var date = new Date();
+			var seperator1 = "-";
+			var year = date.getFullYear();
+			var month = date.getMonth() + 1;
+			var strDate = date.getDate();
+			if (month >= 1 && month <= 9) {
+				month = "0" + month;
+			}
+			if (strDate >= 0 && strDate <= 9) {
+				strDate = "0" + strDate;
+			}
+			var currentdate = year + seperator1 + month + seperator1 + strDate;
+			return currentdate;
+		}
+	</script>
+	<script type="text/html" id="toolTpl">
+        <div class="layui-btn-group">
+            <a class="layui-btn layui-btn-xs edit" lay-event="download">下载</a>
+            <a class="layui-btn layui-btn-danger layui-btn-xs del" lay-event="del">删除</a>
+        </div>
+    </script>
+</body>
+</html>

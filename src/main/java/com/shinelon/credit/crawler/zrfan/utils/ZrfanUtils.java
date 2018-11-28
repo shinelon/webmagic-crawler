@@ -14,6 +14,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -102,6 +103,32 @@ public class ZrfanUtils {
 	public static String dateToStr(LocalDate ld) {
 		return ld.format(DEFALUT_DTF);
 	}
+
+	/***
+	 * 校验格式是否合法
+	 * 
+	 * @param dateStr
+	 * @return
+	 */
+	public static boolean checkDateStyle(String dateStr) {
+		boolean ret = false;
+		try {
+			LocalDate.parse(dateStr, DEFALUT_DTF);
+			ret = true;
+		} catch (Exception e) {
+			logger.error("{} 格式非法：标准格式应该为：yyyy-MM-dd", dateStr);
+			logger.error(e.getMessage(), e);
+		}
+		return ret;
+	}
 	
+	/***
+	 * 去除掉 &nbsp;
+	 * @param str
+	 * @return
+	 */
+	public static String removeNbsp(String str) {
+		return StringUtils.remove(StringEscapeUtils.escapeHtml4(str), "&nbsp;");
+	}
 
 }

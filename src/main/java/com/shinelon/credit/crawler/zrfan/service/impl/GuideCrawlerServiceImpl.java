@@ -77,13 +77,15 @@ public class GuideCrawlerServiceImpl implements GuideCrawlerService{
          
          logger.info("list size:{}", list.size());
          
-         writeCsv(list);
+         String fileNameDateStr=dateStrs.stream().findFirst().orElse(ZrfanUtils.getTodayStr());
+         
+         writeCsv(list,getFileFullName(fileNameDateStr));
 	}
 	
 	
-	private void writeCsv(List<Activity> list) {
+	private void writeCsv(List<Activity> list,String fileFullName) {
 		List<String[]> csvList = csvList(list);
-		CsvWriter writer = CsvUtil.getWriter(getFileFullName(), Charset.forName("GBK"));
+		CsvWriter writer = CsvUtil.getWriter(fileFullName, Charset.forName("GBK"));
 		writer.write(csvList);
 		writer.close();
 	}
@@ -99,7 +101,7 @@ public class GuideCrawlerServiceImpl implements GuideCrawlerService{
 
 	}
 	
-	private String getFileFullName() {
-		return filePath+fileName+"-"+ZrfanUtils.getTodayStr()+fileSuffix;
+	private String getFileFullName(String fileNameDateStr) {
+		return filePath+fileName+"-"+fileNameDateStr+fileSuffix;
 	}
 }

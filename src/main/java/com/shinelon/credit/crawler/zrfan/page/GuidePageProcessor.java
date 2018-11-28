@@ -135,7 +135,7 @@ public class GuidePageProcessor implements PageProcessor {
 			String url = element.select("a").attr("href");
 			activity.setTitle(title);
 			activity.setContent(content);
-			activity.setKeywords(keyword);
+			activity.setKeywords(ZrfanUtils.removeNbsp(keyword));
 			activity.setUrl(ZrfanUtils.totalFormatUrl(url));
 			result.add(activity);
 		}
@@ -149,7 +149,7 @@ public class GuidePageProcessor implements PageProcessor {
 			for (Element p : ps) {
 				Activity activity = new Activity();
 				
-				activity.setKeywords(StringUtils.remove(StringEscapeUtils.escapeHtml4(keyword), "&nbsp;"));
+				activity.setKeywords(ZrfanUtils.removeNbsp(keyword));
 				activity.setTitle(p.text());
 				Elements hasA = p.select("a");
 				if (hasA.size() > 0) {

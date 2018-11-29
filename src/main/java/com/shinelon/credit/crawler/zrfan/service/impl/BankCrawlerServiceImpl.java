@@ -21,7 +21,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.shinelon.credit.crawler.config.SeleniumDownloader;
 import com.shinelon.credit.crawler.zrfan.model.Activity;
 import com.shinelon.credit.crawler.zrfan.page.BankPageProcessor;
 import com.shinelon.credit.crawler.zrfan.pipeline.ZrfanActivityPipeline;

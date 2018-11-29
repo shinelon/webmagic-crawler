@@ -24,7 +24,7 @@ import com.shinelon.credit.crawler.chrome.WebDriverPooledObjectFactory;
  * HelloWord.java
  *
  * @author syq
- *
+ * 
  */
 public class HelloWord {
 	private static final Logger logger = LoggerFactory.getLogger(HelloWord.class);

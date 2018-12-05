@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import com.shinelon.credit.crawler.service.ZrfanCrawlService;
 import com.shinelon.credit.crawler.zrfan.service.BankCrawlerService;
 import com.shinelon.credit.crawler.zrfan.service.GuideCrawlerService;
+import com.shinelon.credit.crawler.zrfan.utils.ZrfanUtils;
 
 /**
  * ZrfanCrawlServiceImpl.java
@@ -69,7 +70,7 @@ public class ZrfanCrawlServiceImpl implements ZrfanCrawlService{
 	@Override
 	public void crawlGuide(String dateStr) {
 		logger.info("guide urls:{} date:{}",GUIDE_URL,dateStr);
-		guidecrawlerService.execute(Arrays.asList(GUIDE_URL), Arrays.asList(dateStr));
+		guidecrawlerService.execute(Arrays.asList(GUIDE_URL), ZrfanUtils.getCompatibleDateList(dateStr));
 	}
 	
 

@@ -9,6 +9,8 @@ package com.shinelon.credit.crawler.zrfan.utils;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -33,6 +35,15 @@ public class ZrfanUtils {
 	private static final Pattern TARGET_URL_PATTERN = Pattern.compile(TARGET_URL);
 
 	public static final DateTimeFormatter DEFALUT_DTF = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+	/***
+	 * 兼容日期格式
+	 */
+	public static final DateTimeFormatter DEFALUT_DTF2 = DateTimeFormatter.ofPattern("yyyy-MM-d");
+	/***
+	 * 兼容日期格式
+	 */
+	public static final DateTimeFormatter DEFALUT_DTF3 = DateTimeFormatter.ofPattern("yyyy-M-d");
+	
 
 	/***
 	 * sleep for a while
@@ -103,7 +114,24 @@ public class ZrfanUtils {
 	public static String dateToStr(LocalDate ld) {
 		return ld.format(DEFALUT_DTF);
 	}
-
+	/***
+	 * getCompatibleDateList
+	 * @param dateStr
+	 * @return
+	 */
+	public static List<String> getCompatibleDateList(String dateStr) {
+		List<String> list = new ArrayList<>(8);
+		try {
+			list.add(dateStr);
+			LocalDate ld = LocalDate.parse(dateStr, DEFALUT_DTF);
+			list.add(ld.format(DEFALUT_DTF2));
+			list.add(ld.format(DEFALUT_DTF3));
+		} catch (Exception e) {
+			logger.error("{} 格式非法：标准格式应该为：yyyy-MM-dd", dateStr);
+			logger.error(e.getMessage(), e);
+		}
+		return list;
+	}
 	/***
 	 * 校验格式是否合法
 	 * 
